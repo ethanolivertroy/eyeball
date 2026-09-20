@@ -30,14 +30,14 @@ This repo is a Cursor plugin. The manifest is `.cursor-plugin/plugin.json`, and 
 **From GitHub**
 
 1. In Cursor, open **Customize**.
-2. Add a marketplace from this repository (`https://github.com/dvelton/eyeball`). Cursor reads `.cursor-plugin/marketplace.json`.
+2. Add a marketplace from this repository (`https://github.com/ethanolivertroy/eyeball`). Cursor reads `.cursor-plugin/marketplace.json`.
 3. Install the **Eyeball** plugin.
 4. Install the Python dependencies below. Run `setup.sh` from the installed plugin directory, or from a clone of this repo.
 
 **As a personal skill**
 
 ```bash
-git clone https://github.com/dvelton/eyeball.git
+git clone https://github.com/ethanolivertroy/eyeball.git
 mkdir -p ~/.cursor/skills
 ln -s "$(pwd)/eyeball/skills/eyeball" ~/.cursor/skills/eyeball
 ```
@@ -51,13 +51,13 @@ To test the plugin locally before publishing, copy this repo to `~/.cursor/plugi
 Point Copilot CLI at this repo and ask it to install the plugin:
 
 ```
-Install the plugin at github.com/dvelton/eyeball for me.
+Install the plugin at github.com/ethanolivertroy/eyeball for me.
 ```
 
 Or install via the Copilot CLI plugin system, or clone the repo:
 
 ```bash
-git clone https://github.com/dvelton/eyeball.git
+git clone https://github.com/ethanolivertroy/eyeball.git
 ```
 
 ### Install dependencies
