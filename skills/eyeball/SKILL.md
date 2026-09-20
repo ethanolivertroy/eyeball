@@ -1,6 +1,6 @@
 ---
 name: eyeball
-description: 'Document analysis with inline source screenshots. When you ask Copilot to analyze a document, Eyeball generates a Word doc where every factual claim includes a highlighted screenshot from the source material so you can verify it with your own eyes.'
+description: 'Document analysis with inline source screenshots. Use when the user says "eyeball", asks to verify claims against a source, or wants a Word, PDF, or web page analyzed with highlighted source screenshots. Works in Cursor and GitHub Copilot. Produces a Word doc where every factual claim includes a highlighted screenshot from the source material.'
 ---
 
 # Eyeball
@@ -22,29 +22,33 @@ Then follow the workflow below.
 
 ## Tool Location
 
-The Eyeball Python utility is located at:
-```
-<plugin_dir>/skills/eyeball/tools/eyeball.py
-```
+The Eyeball Python utility is `tools/eyeball.py` in this skill directory (the folder that contains this `SKILL.md`).
 
-To find the actual path, run:
+Prefer that path. In Cursor it is usually one of:
+
+- `<skill_dir>/tools/eyeball.py` when this skill is loaded from the project or from `~/.cursor/skills`
+- `${CURSOR_PLUGIN_ROOT}/skills/eyeball/tools/eyeball.py` when the Cursor plugin is installed
+
+If you do not already know the skill directory, search the Cursor and Copilot install locations:
+
 ```bash
-find ~/.copilot/installed-plugins -name "eyeball.py" -path "*/eyeball/*" 2>/dev/null
+find ~/.cursor/plugins ~/.cursor/skills ~/.agents/skills ~/.copilot/installed-plugins "$PWD" \
+  -name eyeball.py -path '*/eyeball/tools/eyeball.py' 2>/dev/null
 ```
 
-If not found there, check the project directory or the user's home directory for the eyeball repo.
+Use the first path that exists. The same script works in Cursor and GitHub Copilot.
 
 ## First-Run Setup
 
-Before first use, check that dependencies are installed:
+Before first use, check that dependencies are installed. `<eyeball.py>` is the path from Tool Location:
 
 ```bash
-python3 <path-to>/eyeball.py setup-check
+python3 <eyeball.py> setup-check
 ```
 
-If anything is missing, run the setup script from the eyeball plugin directory:
+If anything is missing, run the setup script from the eyeball repo or plugin root (the directory that contains `setup.sh`, not the skill directory):
 ```bash
-bash <path-to>/setup.sh
+bash <plugin-root>/setup.sh
 ```
 
 Or install manually:
@@ -62,7 +66,7 @@ Follow these steps exactly. The order matters.
 Before writing any analysis, extract and read the full text of the source document:
 
 ```bash
-python3 eyeball.py extract-text --source "<path-or-url>"
+python3 <eyeball.py> extract-text --source "<path-or-url>"
 ```
 
 Read the output carefully. Identify actual section numbers, headings, page numbers, and key language.
@@ -118,7 +122,7 @@ RIGHT -- includes the section number for precision, targets the correct page:
 Construct a JSON array of sections and call the build command:
 
 ```bash
-python3 eyeball.py build \
+python3 <eyeball.py> build \
   --source "<path-or-url>" \
   --output ~/Desktop/<title>.docx \
   --title "Analysis Title" \

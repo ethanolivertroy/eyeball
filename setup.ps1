@@ -125,6 +125,10 @@ if (-not $converterFound) {
 }
 
 Write-Host ""
+Write-Host "Cursor: install this repo as a plugin, or link skills/eyeball into `$HOME/.cursor/skills/eyeball."
+Write-Host "Copilot: install the plugin from this repo in Copilot CLI."
+Write-Host "See the README for both install paths."
+Write-Host ""
 Write-Host "Setup complete."
 Write-Host ""
 Write-Host "Supported source types:"

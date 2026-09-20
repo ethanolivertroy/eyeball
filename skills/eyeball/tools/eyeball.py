@@ -6,7 +6,7 @@ Converts source documents (Word, PDF, web URL) to PDF, renders pages as images,
 searches for cited text, highlights matching regions, and assembles an output
 Word document with analysis text interleaved with source screenshots.
 
-Usage (called by the Copilot CLI skill, not typically invoked directly):
+Usage (called by the Cursor or Copilot skill, not typically invoked directly):
 
     python3 eyeball.py build \
         --source <path-or-url> \

@@ -2,14 +2,14 @@ A tool to help verify AI statements.
 
 When AI analyzes a document and tells you "Section 10 requires mutual indemnification," how do you know Section 10 actually says that? Eyeball lets you see for yourself.
 
-This is a Copilot CLI plugin that generates document analyses as Word files with inline screenshots of relevant portions from the source material. Every factual claim in the analysis includes a highlighted screenshotted excerpt from the original document, so you can verify each assertion without switching between files or hunting for the right page.
+This is a plugin for Cursor and GitHub Copilot. It generates document analyses as Word files with inline screenshots of relevant portions from the source material. Every factual claim in the analysis includes a highlighted screenshotted excerpt from the original document, so you can verify each assertion without switching between files or hunting for the right page.
 
 ![Sample Eyeball output showing analysis with highlighted source screenshot](docs/sample-output.png)
 *Sample output using a synthetic vendor agreement. All names and terms are fictional.*
 
 ## What it does
 
-You give Copilot a document (Word file, PDF, or web URL) and ask it to analyze something specific. Eyeball reads the source, writes the analysis, and for each claim, captures a screenshot of the relevant section from the original document with the cited text highlighted in yellow. The output is a Word document on your Desktop with analysis text and source screenshots interleaved.
+You give Cursor or Copilot a document (Word file, PDF, or web URL) and ask it to analyze something specific. Eyeball reads the source, writes the analysis, and for each claim, captures a screenshot of the relevant section from the original document with the cited text highlighted in yellow. The output is a Word document on your Desktop with analysis text and source screenshots interleaved.
 
 If the analysis says "Section 9.3 allows termination for cause with a 30-day cure period," the screenshot below it shows Section 9.3 from the actual document with that language highlighted. If the screenshot shows something different, the analysis is wrong and you can see it immediately.
 
@@ -17,23 +17,44 @@ If the analysis says "Section 9.3 allows termination for cause with a 30-day cur
 
 ### Prerequisites
 
-- [Copilot CLI](https://docs.github.com/copilot/concepts/agents/about-copilot-cli) installed and authenticated
+- [Cursor](https://cursor.com) or [Copilot CLI](https://docs.github.com/copilot/concepts/agents/about-copilot-cli)
 - Python 3.8 or later
 - One of the following for Word document support (PDFs and web URLs work without these):
   - Microsoft Word (macOS or Windows)
   - LibreOffice (any platform)
 
-### Install the plugin
+### Install in Cursor
 
-Point your CLI at this repo and ask it to install the plugin for you, with this prompt:
+This repo is a Cursor plugin. The manifest is `.cursor-plugin/plugin.json`, and the skill is `skills/eyeball`. Opening this repository in Cursor also loads that skill through `.cursor/skills/eyeball`.
+
+**From GitHub**
+
+1. In Cursor, open **Customize**.
+2. Add a marketplace from this repository (`https://github.com/dvelton/eyeball`). Cursor reads `.cursor-plugin/marketplace.json`.
+3. Install the **Eyeball** plugin.
+4. Install the Python dependencies below. Run `setup.sh` from the installed plugin directory, or from a clone of this repo.
+
+**As a personal skill**
+
+```bash
+git clone https://github.com/dvelton/eyeball.git
+mkdir -p ~/.cursor/skills
+ln -s "$(pwd)/eyeball/skills/eyeball" ~/.cursor/skills/eyeball
+```
+
+Reload Cursor. The skill shows up under Customize, in Skills, and you can invoke it with `/eyeball`.
+
+To test the plugin locally before publishing, copy this repo to `~/.cursor/plugins/local/eyeball` and reload the window. See the [Cursor plugins docs](https://cursor.com/docs/plugins).
+
+### Install in GitHub Copilot
+
+Point Copilot CLI at this repo and ask it to install the plugin:
 
 ```
 Install the plugin at github.com/dvelton/eyeball for me.
 ```
 
-Or:
-
-Install via the Copilot CLI plugin system, or clone the repo:
+Or install via the Copilot CLI plugin system, or clone the repo:
 
 ```bash
 git clone https://github.com/dvelton/eyeball.git
@@ -74,7 +95,7 @@ This shows which source types are supported on your machine.
 
 ## How to use it
 
-In a Copilot CLI conversation, tell it to use eyeball and what you want analyzed:
+In Cursor Agent chat, type `/eyeball` or ask in plain language. In a Copilot CLI conversation, tell it to use eyeball. Examples:
 
 ```
 use eyeball on ~/Desktop/vendor-agreement.docx -- analyze the indemnification
