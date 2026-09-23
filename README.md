@@ -25,7 +25,7 @@ If the analysis says "Section 9.3 allows termination for cause with a 30-day cur
 
 ### Install in Cursor
 
-This repo is a Cursor plugin. The manifest is `.cursor-plugin/plugin.json`, and the skill is `skills/eyeball`. Opening this repository in Cursor also loads that skill through `.cursor/skills/eyeball`.
+This repo is a Cursor marketplace with one plugin, `plugins/eyeball`. Its manifest is `plugins/eyeball/.cursor-plugin/plugin.json`, and that plugin loads the same skill Copilot uses (`skills/eyeball`). Opening this repository in Cursor also loads the skill through `.cursor/skills/eyeball`.
 
 **From GitHub**
 
@@ -44,7 +44,7 @@ ln -s "$(pwd)/eyeball/skills/eyeball" ~/.cursor/skills/eyeball
 
 Reload Cursor. The skill shows up under Customize, in Skills, and you can invoke it with `/eyeball`.
 
-To test the plugin locally before publishing, copy this repo to `~/.cursor/plugins/local/eyeball` and reload the window. See the [Cursor plugins docs](https://cursor.com/docs/plugins).
+To test the plugin locally before publishing, copy `plugins/eyeball` to `~/.cursor/plugins/local/eyeball` and reload the window. See the [Cursor plugins docs](https://cursor.com/docs/plugins).
 
 ### Install in GitHub Copilot
 
