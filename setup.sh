@@ -59,6 +59,10 @@ if [ "$CONVERTER_FOUND" = false ]; then
 fi
 
 echo ""
+echo "Cursor: install this repo as a plugin, or link skills/eyeball into ~/.cursor/skills/eyeball."
+echo "Copilot: install the plugin from this repo in Copilot CLI."
+echo "See the README for both install paths."
+echo ""
 echo "Setup complete."
 echo ""
 echo "Supported source types:"

@@ -1,11 +1,11 @@
 {
   "name": "eyeball",
-  "description": "Document analysis with inline source screenshots. When you ask Copilot to analyze a document, Eyeball generates a Word doc where every factual claim includes a highlighted screenshot from the source material so you can verify it with your own eyes.",
-  "version": "1.0.0",
+  "description": "Document analysis with inline source screenshots. When you ask Cursor or Copilot to analyze a document, Eyeball generates a Word doc where every factual claim includes a highlighted screenshot from the source material so you can verify it with your own eyes.",
+  "version": "1.1.0",
   "author": {
     "name": "dvelton"
   },
-  "repository": "https://github.com/dvelton/eyeball",
+  "repository": "https://github.com/ethanolivertroy/eyeball",
   "license": "MIT",
   "keywords": [
     "document-analysis",
