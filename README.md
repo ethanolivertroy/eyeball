@@ -25,7 +25,7 @@ If the analysis says "Section 9.3 allows termination for cause with a 30-day cur
 
 ### Install in Cursor
 
-This repo is a Cursor marketplace with one plugin, `plugins/eyeball`. Its manifest is `plugins/eyeball/.cursor-plugin/plugin.json`, and that plugin loads the same skill Copilot uses (`skills/eyeball`). Opening this repository in Cursor also loads the skill through `.cursor/skills/eyeball`.
+This repo is a Cursor marketplace with one plugin, `plugins/eyeball`. Its manifest is `plugins/eyeball/.cursor-plugin/plugin.json`. The skill files live in that plugin as real files (`plugins/eyeball/skills/eyeball`), and Copilot loads the same directory. `setup.sh` and `requirements.txt` ship inside the plugin, so an installed copy can install its own dependencies. Opening this repository in Cursor also loads the skill through `.cursor/skills/eyeball`.
 
 **From GitHub**
 
@@ -39,7 +39,7 @@ This repo is a Cursor marketplace with one plugin, `plugins/eyeball`. Its manife
 ```bash
 git clone https://github.com/ethanolivertroy/eyeball.git
 mkdir -p ~/.cursor/skills
-ln -s "$(pwd)/eyeball/skills/eyeball" ~/.cursor/skills/eyeball
+ln -s "$(pwd)/eyeball/plugins/eyeball/skills/eyeball" ~/.cursor/skills/eyeball
 ```
 
 Reload Cursor. The skill shows up under Customize, in Skills, and you can invoke it with `/eyeball`.
@@ -88,7 +88,7 @@ On Windows, `pywin32` is also needed for Microsoft Word automation and is instal
 ### Verify setup
 
 ```bash
-python3 skills/eyeball/tools/eyeball.py setup-check
+python3 plugins/eyeball/skills/eyeball/tools/eyeball.py setup-check
 ```
 
 This shows which source types are supported on your machine.
@@ -137,6 +137,21 @@ The screenshots are dynamically sized: if a section of analysis references text 
 In hallucination-sensitive contexts, sometimes we need to see receipts.
 
 Quoted text is easy to fabricate. A model can generate a plausible-sounding quote that doesn't actually appear in the source, and without checking, you'd never know. Screenshots from the rendered source are harder to fake; they show the actual formatting, layout, and surrounding context of the original document. You can see at a glance whether the highlighted text matches the claim, and the surrounding text provides context that a cherry-picked quote might omit.
+
+## Checked sample
+
+`docs/sample-analysis/` holds a one-page synthetic PDF and the Word file Eyeball built from it. The analysis cites "30-day cure period", and the docx embeds a screenshot of that phrase from the PDF. Regenerate it with:
+
+```bash
+python3 plugins/eyeball/skills/eyeball/tools/eyeball.py extract-text \
+  --source docs/sample-analysis/source.pdf
+python3 plugins/eyeball/skills/eyeball/tools/eyeball.py build \
+  --source docs/sample-analysis/source.pdf \
+  --output docs/sample-analysis/analysis.docx \
+  --title "Sample analysis" \
+  --subtitle "Synthetic one-page source" \
+  --sections '[{"heading":"1. Termination","analysis":"Section 9.3 allows termination for cause with a 30-day cure period.","anchors":["30-day cure period"],"target_page":1}]'
+```
 
 ## Limitations
 

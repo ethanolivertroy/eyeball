@@ -8,4 +8,5 @@ build/
 *.pdf
 *.png
 !docs/*.png
+!docs/sample-analysis/*.pdf
 /tmp/

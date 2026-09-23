@@ -24,10 +24,13 @@ Then follow the workflow below.
 
 The Eyeball Python utility is `tools/eyeball.py` in this skill directory (the folder that contains this `SKILL.md`).
 
-Prefer that path. In Cursor it is usually one of:
+Prefer that path. When the skill is installed as a Cursor plugin, the same file is:
 
-- `<skill_dir>/tools/eyeball.py` when this skill is loaded from the project or from `~/.cursor/skills`
-- `${CURSOR_PLUGIN_ROOT}/skills/eyeball/tools/eyeball.py` when the Cursor plugin is installed
+```
+${CURSOR_PLUGIN_ROOT}/skills/eyeball/tools/eyeball.py
+```
+
+`CURSOR_PLUGIN_ROOT` is the directory that contains `setup.sh` and `skills/`. In this repo that directory is `plugins/eyeball`.
 
 If you do not already know the skill directory, search the Cursor and Copilot install locations:
 
@@ -46,9 +49,10 @@ Before first use, check that dependencies are installed. `<eyeball.py>` is the p
 python3 <eyeball.py> setup-check
 ```
 
-If anything is missing, run the setup script from the eyeball repo or plugin root (the directory that contains `setup.sh`, not the skill directory):
+If anything is missing, run `setup.sh` from the plugin root. That directory is two levels above this skill (`<skill_dir>/../..`) and contains `setup.sh` and `requirements.txt`. From a clone of the repo, `./setup.sh` at the repo root runs the same script.
+
 ```bash
-bash <plugin-root>/setup.sh
+bash <skill_dir>/../../setup.sh
 ```
 
 Or install manually:
