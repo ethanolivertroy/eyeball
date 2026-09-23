@@ -25,7 +25,7 @@ If the analysis says "Section 9.3 allows termination for cause with a 30-day cur
 
 ### Install in Cursor
 
-This repo is a Cursor marketplace with one plugin, `plugins/eyeball`. Its manifest is `plugins/eyeball/.cursor-plugin/plugin.json`. The skill files live in that plugin as real files (`plugins/eyeball/skills/eyeball`), and Copilot loads the same directory. `setup.sh` and `requirements.txt` ship inside the plugin, so an installed copy can install its own dependencies. Opening this repository in Cursor also loads the skill through `.cursor/skills/eyeball`.
+This repo is a Cursor marketplace with one plugin, `plugins/eyeball`. Its manifest is `plugins/eyeball/.cursor-plugin/plugin.json`. The skill files live in that plugin as real files (`plugins/eyeball/skills/eyeball`), and Copilot loads the same directory. `setup.sh` and `requirements.txt` ship inside the plugin, so an installed copy can install its own dependencies. Opening this repository in Cursor loads the same skill from `.cursor/skills/eyeball`. That folder is a real copy, because Cursor's skill scan skips a directory symlink.
 
 **From GitHub**
 
@@ -39,8 +39,11 @@ This repo is a Cursor marketplace with one plugin, `plugins/eyeball`. Its manife
 ```bash
 git clone https://github.com/ethanolivertroy/eyeball.git
 mkdir -p ~/.cursor/skills
-ln -s "$(pwd)/eyeball/plugins/eyeball/skills/eyeball" ~/.cursor/skills/eyeball
+rm -rf ~/.cursor/skills/eyeball
+cp -R eyeball/plugins/eyeball/skills/eyeball ~/.cursor/skills/eyeball
 ```
+
+Copy the folder. A symlink into `~/.cursor/skills` is skipped by Cursor's skill scan.
 
 Reload Cursor. The skill shows up under Customize, in Skills, and you can invoke it with `/eyeball`.
 
