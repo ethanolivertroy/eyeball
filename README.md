@@ -29,9 +29,9 @@ This repo is a Cursor marketplace with one plugin, `plugins/eyeball`. Its manife
 
 **From GitHub**
 
-1. In Cursor, open **Customize**.
-2. Add a marketplace from this repository (`https://github.com/ethanolivertroy/eyeball`). Cursor reads `.cursor-plugin/marketplace.json`.
-3. Install the **Eyeball** plugin.
+1. In Cursor, open **Customize** in the sidebar.
+2. Import this repository with **From GitHub Repository** (`https://github.com/ethanolivertroy/eyeball`). Cursor reads `.cursor-plugin/marketplace.json`.
+3. Install **Eyeball** and choose user or project scope.
 4. Install the Python dependencies below. Run `setup.sh` from the installed plugin directory, or from a clone of this repo.
 
 **As a personal skill**
@@ -47,7 +47,7 @@ Copy the folder. A symlink into `~/.cursor/skills` is skipped by Cursor's skill 
 
 Reload Cursor. The skill shows up under Customize, in Skills, and you can invoke it with `/eyeball`.
 
-To test the plugin locally before publishing, copy `plugins/eyeball` to `~/.cursor/plugins/local/eyeball` and reload the window. See the [Cursor plugins docs](https://cursor.com/docs/plugins).
+To test the plugin locally before publishing, copy `plugins/eyeball` to `~/.cursor/plugins/local/eyeball` and reload the window. Cursor only loads a symlink there when the target stays inside that folder, so copy the directory. On Enterprise, local plugin imports are off until an admin turns on Allow Local Plugin Imports. A marketplace install of the same name takes precedence over the local copy. See the [Cursor plugins docs](https://cursor.com/docs/plugins).
 
 ### Install in GitHub Copilot
 
