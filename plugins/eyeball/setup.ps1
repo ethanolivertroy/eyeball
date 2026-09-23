@@ -125,7 +125,7 @@ if (-not $converterFound) {
 }
 
 Write-Host ""
-Write-Host "Cursor: copy plugins/eyeball to `$HOME/.cursor/plugins/local/eyeball, or add this repo as a marketplace."
+Write-Host "Cursor: this folder is the plugin. Copy it to `$HOME/.cursor/plugins/local/eyeball, or install Eyeball from this repo's marketplace."
 Write-Host "Copilot: install the plugin from this repo in Copilot CLI."
 Write-Host "See the README for both install paths."
 Write-Host ""

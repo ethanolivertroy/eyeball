@@ -59,7 +59,7 @@ if [ "$CONVERTER_FOUND" = false ]; then
 fi
 
 echo ""
-echo "Cursor: copy plugins/eyeball to ~/.cursor/plugins/local/eyeball, or add this repo as a marketplace."
+echo "Cursor: this folder is the plugin. Copy it to ~/.cursor/plugins/local/eyeball, or install Eyeball from this repo's marketplace."
 echo "Copilot: install the plugin from this repo in Copilot CLI."
 echo "See the README for both install paths."
 echo ""

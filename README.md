@@ -43,7 +43,7 @@ rm -rf ~/.cursor/skills/eyeball
 cp -R eyeball/plugins/eyeball/skills/eyeball ~/.cursor/skills/eyeball
 ```
 
-Copy the folder. A symlink into `~/.cursor/skills` is skipped by Cursor's skill scan.
+Copy the folder. A symlink into `~/.cursor/skills` is skipped by Cursor's skill scan. That copy does not include `setup.sh`. Install dependencies from the clone with `bash plugins/eyeball/setup.sh` before you reload Cursor.
 
 Reload Cursor. The skill shows up under Customize, in Skills, and you can invoke it with `/eyeball`.
 

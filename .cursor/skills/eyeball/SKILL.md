@@ -49,11 +49,15 @@ Before first use, check that dependencies are installed. `<eyeball.py>` is the p
 python3 <eyeball.py> setup-check
 ```
 
-If anything is missing, run `setup.sh` from the plugin root. That directory is two levels above this skill (`<skill_dir>/../..`) and contains `setup.sh` and `requirements.txt`. From a clone of the repo, `./setup.sh` at the repo root runs the same script.
+If anything is missing, run the plugin's `setup.sh`. It sits next to `requirements.txt` in the plugin root.
+
+An installed Cursor plugin, and this repo when the skill loads from `.cursor/skills/eyeball`, both keep that script two levels above the skill:
 
 ```bash
 bash <skill_dir>/../../setup.sh
 ```
+
+Run that only when the file exists. A personal skill copied to `~/.cursor/skills/eyeball` does not include `setup.sh`. From a clone of this repo, run `bash plugins/eyeball/setup.sh` instead.
 
 Or install manually:
 ```bash
