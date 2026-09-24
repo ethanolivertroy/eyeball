@@ -49,7 +49,9 @@ Before first use, check that dependencies are installed. `<eyeball.py>` is the p
 python3 <eyeball.py> setup-check
 ```
 
-If anything is missing, run the plugin's `setup.sh`. It sits next to `requirements.txt` in the plugin root.
+Read the "Source support" lines at the end of the output. If the source type you need says `Ready`, continue. The check always lists at least one Word entry as missing, because it looks for Word on both macOS and Windows. For Word documents, one of Word or LibreOffice is enough.
+
+If the source type you need is not ready, run the plugin's `setup.sh`. It installs the Python packages and Playwright's Chromium for web pages. It does not install Word or LibreOffice. The script sits next to `requirements.txt` in the plugin root.
 
 In an installed Cursor plugin or a Copilot install, that script is two levels above the skill:
 
@@ -127,7 +129,7 @@ RIGHT -- includes the section number for precision, targets the correct page:
 
 ### Step 4: Build the analysis document
 
-Construct a JSON array of sections and call the build command:
+Construct a JSON array of sections and call the build command. The inline example below breaks as soon as the analysis contains an apostrophe (for example, "Vendor's"). Write the JSON to a file instead and pass `--sections "$(cat <file>)"`.
 
 ```bash
 python3 <eyeball.py> build \
@@ -177,6 +179,8 @@ Before saving the final document, mentally verify:
 ## Notes
 
 - The output document includes highlighted screenshots that are dynamically sized. If you provide multiple anchors, the screenshot expands to cover all of them.
-- When a search term is not found, the output document will note this. If this happens, the anchor was likely not verbatim enough. Adjust and rebuild.
+- When none of a section's anchors are found, the output document notes it. When only some are found, the missing ones are skipped without a note, so confirm every anchor appears in the extracted text before you build. A missing anchor was likely not verbatim enough. Adjust and rebuild.
+- Anchor search ignores case, so `LIMITATION OF LIABILITY` also matches lowercase cross-references.
+- Word documents are converted to PDF (by Word or LibreOffice) before searching, so page breaks can differ from what the user sees in Word. Use the page numbers from step 1.
 - For web pages, Playwright renders the page to PDF first. The resulting page numbers may differ from what you see in a browser. Use the extracted text output (step 1) to determine correct page numbers.
 - If the user has already provided the source text or you have already read it in the current conversation, you can skip step 1. But always verify section numbers and page references against the actual text before writing analysis.
