@@ -25,13 +25,13 @@ If the analysis says "Section 9.3 allows termination for cause with a 30-day cur
 
 ### Install in Cursor
 
-This repo is a Cursor plugin. The manifest is `.cursor-plugin/plugin.json`, and the skill is `skills/eyeball`. Opening this repository in Cursor also loads that skill through `.cursor/skills/eyeball`.
+This repo is a Cursor marketplace with one plugin, `plugins/eyeball`. Its manifest is `plugins/eyeball/.cursor-plugin/plugin.json`. The skill files live in that plugin as real files (`plugins/eyeball/skills/eyeball`), and Copilot loads the same directory. `setup.sh` and `requirements.txt` ship inside the plugin, so an installed copy can install its own dependencies. Opening this repository in Cursor loads the same skill from `.cursor/skills/eyeball`. That folder is a real copy, because Cursor's skill scan skips a directory symlink.
 
 **From GitHub**
 
-1. In Cursor, open **Customize**.
-2. Add a marketplace from this repository (`https://github.com/ethanolivertroy/eyeball`). Cursor reads `.cursor-plugin/marketplace.json`.
-3. Install the **Eyeball** plugin.
+1. In Cursor, open **Customize** in the sidebar.
+2. Import this repository with **From GitHub Repository** (`https://github.com/ethanolivertroy/eyeball`). Cursor reads `.cursor-plugin/marketplace.json`.
+3. Install **Eyeball** and choose user or project scope.
 4. Install the Python dependencies below. Run `setup.sh` from the installed plugin directory, or from a clone of this repo.
 
 **As a personal skill**
@@ -39,12 +39,15 @@ This repo is a Cursor plugin. The manifest is `.cursor-plugin/plugin.json`, and 
 ```bash
 git clone https://github.com/ethanolivertroy/eyeball.git
 mkdir -p ~/.cursor/skills
-ln -s "$(pwd)/eyeball/skills/eyeball" ~/.cursor/skills/eyeball
+rm -rf ~/.cursor/skills/eyeball
+cp -R eyeball/plugins/eyeball/skills/eyeball ~/.cursor/skills/eyeball
 ```
+
+Copy the folder. A symlink into `~/.cursor/skills` is skipped by Cursor's skill scan. That copy does not include `setup.sh`. Install dependencies from the clone with `bash plugins/eyeball/setup.sh` before you reload Cursor.
 
 Reload Cursor. The skill shows up under Customize, in Skills, and you can invoke it with `/eyeball`.
 
-To test the plugin locally before publishing, copy this repo to `~/.cursor/plugins/local/eyeball` and reload the window. See the [Cursor plugins docs](https://cursor.com/docs/plugins).
+To test the plugin locally before publishing, copy `plugins/eyeball` to `~/.cursor/plugins/local/eyeball` and reload the window. Cursor only loads a symlink there when the target stays inside that folder, so copy the directory. On Enterprise, local plugin imports are off until an admin turns on Allow Local Plugin Imports. A marketplace install of the same name takes precedence over the local copy. See the [Cursor plugins docs](https://cursor.com/docs/plugins).
 
 ### Install in GitHub Copilot
 
@@ -88,7 +91,7 @@ On Windows, `pywin32` is also needed for Microsoft Word automation and is instal
 ### Verify setup
 
 ```bash
-python3 skills/eyeball/tools/eyeball.py setup-check
+python3 plugins/eyeball/skills/eyeball/tools/eyeball.py setup-check
 ```
 
 This shows which source types are supported on your machine.
@@ -137,6 +140,21 @@ The screenshots are dynamically sized: if a section of analysis references text 
 In hallucination-sensitive contexts, sometimes we need to see receipts.
 
 Quoted text is easy to fabricate. A model can generate a plausible-sounding quote that doesn't actually appear in the source, and without checking, you'd never know. Screenshots from the rendered source are harder to fake; they show the actual formatting, layout, and surrounding context of the original document. You can see at a glance whether the highlighted text matches the claim, and the surrounding text provides context that a cherry-picked quote might omit.
+
+## Checked sample
+
+`docs/sample-analysis/` holds a one-page synthetic PDF and the Word file Eyeball built from it. The analysis cites "30-day cure period", and the docx embeds a screenshot of that phrase from the PDF. Regenerate it with:
+
+```bash
+python3 plugins/eyeball/skills/eyeball/tools/eyeball.py extract-text \
+  --source docs/sample-analysis/source.pdf
+python3 plugins/eyeball/skills/eyeball/tools/eyeball.py build \
+  --source docs/sample-analysis/source.pdf \
+  --output docs/sample-analysis/analysis.docx \
+  --title "Sample analysis" \
+  --subtitle "Synthetic one-page source" \
+  --sections '[{"heading":"1. Termination","analysis":"Section 9.3 allows termination for cause with a 30-day cure period.","anchors":["30-day cure period"],"target_page":1}]'
+```
 
 ## Limitations
 
