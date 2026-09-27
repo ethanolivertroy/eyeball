@@ -25,29 +25,30 @@ If the analysis says "Section 9.3 allows termination for cause with a 30-day cur
 
 ### Install in Cursor
 
-This repo is a Cursor marketplace with one plugin, `plugins/eyeball`. Its manifest is `plugins/eyeball/.cursor-plugin/plugin.json`. The skill files live in that plugin as real files (`plugins/eyeball/skills/eyeball`), and Copilot loads the same directory. `setup.sh` and `requirements.txt` ship inside the plugin, so an installed copy can install its own dependencies. Opening this repository in Cursor loads the same skill from `.cursor/skills/eyeball`. That folder is a real copy, because Cursor's skill scan skips a directory symlink.
-
-**From GitHub**
-
 1. In Cursor, open **Customize** in the sidebar.
-2. Import this repository with **From GitHub Repository** (`https://github.com/ethanolivertroy/eyeball`). Cursor reads `.cursor-plugin/marketplace.json`.
-3. Install **Eyeball** and choose user or project scope.
-4. Install the Python dependencies below. Run `setup.sh` from the installed plugin directory, or from a clone of this repo.
+2. Choose **From GitHub Repository** and enter `https://github.com/ethanolivertroy/eyeball`.
+3. Install **Eyeball** and choose a user or project scope.
+4. In Agent chat, type `/eyeball`. The skill should appear in the list.
+
+The Python dependencies install the first time you use Eyeball (see [Install dependencies](#install-dependencies)). Word documents also need Microsoft Word or LibreOffice.
+
+On Teams and Enterprise plans, this repo can also be added as a team marketplace from **Dashboard > Plugins & MCPs** (**Add Marketplace**, then **Import from Repo**).
 
 **As a personal skill**
+
+To use the skill without installing the plugin, copy it into your Cursor skills folder and install the dependencies from the clone:
 
 ```bash
 git clone https://github.com/ethanolivertroy/eyeball.git
 mkdir -p ~/.cursor/skills
 rm -rf ~/.cursor/skills/eyeball
 cp -R eyeball/plugins/eyeball/skills/eyeball ~/.cursor/skills/eyeball
+bash eyeball/plugins/eyeball/setup.sh
 ```
 
-Copy the folder. A symlink into `~/.cursor/skills` is skipped by Cursor's skill scan. That copy does not include `setup.sh`. Install dependencies from the clone with `bash plugins/eyeball/setup.sh` before you reload Cursor.
+Copy the folder instead of linking it, because Cursor skips skill folders that are symlinks. Reload Cursor, and Eyeball appears under **Customize > Skills**.
 
-Reload Cursor. The skill shows up under Customize, in Skills, and you can invoke it with `/eyeball`.
-
-To test the plugin locally before publishing, copy `plugins/eyeball` to `~/.cursor/plugins/local/eyeball` and reload the window. Cursor only loads a symlink there when the target stays inside that folder, so copy the directory. On Enterprise, local plugin imports are off until an admin turns on Allow Local Plugin Imports. A marketplace install of the same name takes precedence over the local copy. See the [Cursor plugins docs](https://cursor.com/docs/plugins).
+If you open this repo itself in Cursor, the skill loads from `.cursor/skills/eyeball` without installing the plugin.
 
 ### Install in GitHub Copilot
 
@@ -64,6 +65,10 @@ git clone https://github.com/ethanolivertroy/eyeball.git
 ```
 
 ### Install dependencies
+
+The first time you use Eyeball, the agent checks its dependencies. If the source type you asked for isn't ready, the agent runs the setup script that ships with the plugin. The script installs the Python packages and Playwright's Chromium browser (for web pages). It does not install Word or LibreOffice.
+
+To run setup yourself from a clone of this repo:
 
 **macOS / Linux:**
 
@@ -94,7 +99,7 @@ On Windows, `pywin32` is also needed for Microsoft Word automation and is instal
 python3 plugins/eyeball/skills/eyeball/tools/eyeball.py setup-check
 ```
 
-This shows which source types are supported on your machine.
+The "Source support" lines at the end show which source types work on your machine. The dependency list always shows at least one Word entry as missing, because it checks for Word on both macOS and Windows. For Word documents, either Word or LibreOffice is enough.
 
 ## How to use it
 
@@ -141,7 +146,49 @@ In hallucination-sensitive contexts, sometimes we need to see receipts.
 
 Quoted text is easy to fabricate. A model can generate a plausible-sounding quote that doesn't actually appear in the source, and without checking, you'd never know. Screenshots from the rendered source are harder to fake; they show the actual formatting, layout, and surrounding context of the original document. You can see at a glance whether the highlighted text matches the claim, and the surrounding text provides context that a cherry-picked quote might omit.
 
-## Checked sample
+## Limitations
+
+- Word document conversion requires Microsoft Word or LibreOffice. Without one of these, you can still use Eyeball with PDFs and web URLs.
+- Text search is string-matching. If the source document uses unusual encoding, ligatures, or non-standard characters, some searches may not match. The skill instructions tell the AI to use verbatim phrases from the extracted text, which handles most cases.
+- Web page rendering depends on Playwright and may not perfectly capture all dynamic content (e.g., content loaded by JavaScript after page load, content behind login walls).
+- Screenshot quality depends on the source formatting. Dense multi-column layouts or very small text may produce less readable screenshots. Increase the DPI setting if needed.
+
+## Development
+
+### Repository layout
+
+Cursor and Copilot load the same skill from `plugins/eyeball`.
+
+```text
+.cursor-plugin/marketplace.json   Marketplace manifest Cursor reads when you import the repo
+.github/plugin/plugin.json        Copilot plugin manifest
+.cursor/skills/eyeball/           Copy of the skill, loaded when this repo is open in Cursor
+plugins/eyeball/                  The plugin folder Cursor installs
+├── .cursor-plugin/plugin.json    Cursor plugin manifest
+├── skills/eyeball/               The skill: SKILL.md and tools/eyeball.py
+├── setup.sh, setup.ps1           Dependency setup
+└── requirements.txt
+setup.sh, setup.ps1               Wrappers that run the plugin's setup scripts
+requirements.txt                  Includes plugins/eyeball/requirements.txt
+docs/                             Sample output and the checked sample below
+```
+
+### Editing the skill
+
+Edit the skill in `plugins/eyeball/skills/eyeball`, then copy it to `.cursor/skills/eyeball`:
+
+```bash
+rm -rf .cursor/skills/eyeball
+cp -R plugins/eyeball/skills/eyeball .cursor/skills/eyeball
+```
+
+The two folders must match. The copy is a real folder rather than a symlink, because Cursor skips skill folders that are symlinks. The repo-root `setup.sh` and `setup.ps1` stop with an error if the copies differ.
+
+### Testing the plugin locally
+
+To try the plugin the way Cursor installs it, copy `plugins/eyeball` to `~/.cursor/plugins/local/eyeball` and run **Developer: Reload Window**. Copy the folder rather than linking it, because Cursor only loads a symlink there when the target is inside that folder. On Teams and Enterprise, admins control local plugins with **Allow Local Plugin Imports**, which is off by default on Enterprise. If Eyeball is also installed from a marketplace, that install takes precedence over the local copy. See the [Cursor plugins docs](https://cursor.com/docs/plugins).
+
+### Checked sample
 
 `docs/sample-analysis/` holds a one-page synthetic PDF and the Word file Eyeball built from it. The analysis cites "30-day cure period", and the docx embeds a screenshot of that phrase from the PDF. Regenerate it with:
 
@@ -155,13 +202,6 @@ python3 plugins/eyeball/skills/eyeball/tools/eyeball.py build \
   --subtitle "Synthetic one-page source" \
   --sections '[{"heading":"1. Termination","analysis":"Section 9.3 allows termination for cause with a 30-day cure period.","anchors":["30-day cure period"],"target_page":1}]'
 ```
-
-## Limitations
-
-- Word document conversion requires Microsoft Word or LibreOffice. Without one of these, you can still use Eyeball with PDFs and web URLs.
-- Text search is string-matching. If the source document uses unusual encoding, ligatures, or non-standard characters, some searches may not match. The skill instructions tell the AI to use verbatim phrases from the extracted text, which handles most cases.
-- Web page rendering depends on Playwright and may not perfectly capture all dynamic content (e.g., content loaded by JavaScript after page load, content behind login walls).
-- Screenshot quality depends on the source formatting. Dense multi-column layouts or very small text may produce less readable screenshots. Increase the DPI setting if needed.
 
 ## License
 
